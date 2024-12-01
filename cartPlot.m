@@ -67,7 +67,7 @@ function cartPlot(states, m0, m1, m2, l1, l2, recAnimation, movePlot, windowSize
             end
         end
 
-        pause(.05);
+        pause(.1);
         drawnow;
     end
 
