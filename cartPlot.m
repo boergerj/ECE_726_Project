@@ -10,7 +10,7 @@ function cartPlot(states, m0, m1, m2, l1, l2, recAnimation, movePlot, windowSize
         movePlot logical = false
         windowSize double = 10
     end
-    x = -states(:,1);
+    x = states(:,1);
     theta1 = states(:,2);
     theta2 = states(:,3);
 
@@ -21,10 +21,10 @@ function cartPlot(states, m0, m1, m2, l1, l2, recAnimation, movePlot, windowSize
     link2Width = .1*m2;
 
     cartX = x - cartWidth/2;
-    link1X = x + l1*sin(theta1 + pi);
-    link1Y = cartHeight/2 - l1*cos(theta1 + pi);
-    link2X = link1X + l2*sin(theta2 + pi);
-    link2Y = link1Y - l2*cos(theta2 + pi);
+    link1X = x + l1*sin(theta1);
+    link1Y = cartHeight/2 + l1*cos(theta1);
+    link2X = link1X + l2*sin(theta2);
+    link2Y = link1Y + l2*cos(theta2);
     
     if recAnimation
         if ispref('ECE726', 'VideoNumber')
@@ -67,7 +67,7 @@ function cartPlot(states, m0, m1, m2, l1, l2, recAnimation, movePlot, windowSize
             end
         end
 
-        pause(.1);
+        % pause(.05);
         drawnow;
     end
 
