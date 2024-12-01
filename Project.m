@@ -83,4 +83,4 @@ xlabel('Time');
 ylabel('Position');
 
 %% Plot
-cartPlot(kalResponse, m0, m1, m2, l1, l2);
+cartPlot(kalResponse, m0, m1, m2, l1, l2, true);

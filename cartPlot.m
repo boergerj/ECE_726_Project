@@ -1,4 +1,4 @@
-function cartPlot(states, m0, m1, m2, l1, l2, movePlot, windowSize)
+function cartPlot(states, m0, m1, m2, l1, l2, recAnimation, movePlot, windowSize)
     arguments
         states
         m0 double
@@ -6,7 +6,8 @@ function cartPlot(states, m0, m1, m2, l1, l2, movePlot, windowSize)
         m2 double
         l1 double
         l2 double
-        movePlot logical = false;
+        recAnimation logical = false
+        movePlot logical = false
         windowSize double = 10
     end
     x = -states(:,1);
@@ -25,6 +26,17 @@ function cartPlot(states, m0, m1, m2, l1, l2, movePlot, windowSize)
     link2X = link1X + l2*sin(theta2 + pi);
     link2Y = link1Y - l2*cos(theta2 + pi);
     
+    if recAnimation
+        if ispref('ECE726', 'VideoNumber')
+            num = getpref('ECE726', 'VideoNumber') + 1;
+        else
+            num = 1;
+        end
+        cam = VideoWriter(fullfile(pwd, ['CartVideo_' num2str(num)]));
+        cam.FrameRate = 20;
+        open(cam);
+    end
+
     f = figure;
     hold on
     
@@ -50,9 +62,17 @@ function cartPlot(states, m0, m1, m2, l1, l2, movePlot, windowSize)
             link1.YData = [cartHeight/2 link1Y(i)];
             link2.XData = [link1X(i) link2X(i)];
             link2.YData = [link1Y(i) link2Y(i)];
+            if recAnimation
+                writeVideo(cam, getframe(gcf));
+            end
         end
 
         pause(.05);
         drawnow;
+    end
+
+    if recAnimation
+        close(cam);
+        setpref('ECE726', 'VideoNumber', num)
     end
 end
