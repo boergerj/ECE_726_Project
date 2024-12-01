@@ -81,3 +81,6 @@ plot(t, real(kalResponse(:,2)))
 plot(t, real(kalResponse(:,3)))
 xlabel('Time');
 ylabel('Position');
+
+%% Plot
+cartPlot(kalResponse, m0, m1, m2, l1, l2);
