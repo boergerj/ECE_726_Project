@@ -2,11 +2,11 @@ clc; clear; close all;
 
 %% Plant Parameters
 m0 = 1.5; % Mass of cart
-m1 = .5; % Mass of first linkage
-m2 = .75; % Mass of second linkage
+m1 = .75; % Mass of first linkage
+m2 = .5; % Mass of second linkage
 
-l1 = .5; % Length of linkage 1
-l2 = .75; % Length of linkage 2
+l1 = .75; % Length of linkage 1
+l2 = .5; % Length of linkage 2
 
 %% Linearized Plant
 
@@ -40,21 +40,20 @@ C = eye(6);
 
 %% LQG
 
-Q = eye(6);
-
+% Cost matricies for plant response
+Q = diag([70;100;100;30;1;1]);
 R = 1;
 
-% Weight matricies for noise
-W1 = eye(6);
-W2 = eye(6)*2;
+% Cost matricies for noise
+W1 = eye(6)*5;
+W2 = eye(6)*10;
 
-v1 = awgn(zeros(6), 1);
-v2 = awgn(zeros(6), 1);
-
-[~, K] = lqr(A, B, Q, R);
-F = inv(R)*B'*K;
+F = lqr(A, B, Q, R);
 
 S = lqr(A', C', W1, W2);
+
+v1 = awgn(zeros(6,1), 2);
+v2 = awgn(zeros(6,1), 2);
 
 A_n = [...
     A    -B*F;
@@ -68,11 +67,14 @@ B_n = [...
 
 C_n = eye(12);
 
-ic = [0; deg2rad(10); deg2rad(-10); 0; 0; 0; zeros(6,1)];
+ic = [0; deg2rad(20); deg2rad(40); 0; 0; 0; zeros(6,1)];
 
-t = 0:.1:10;
-lqgSys = ss(A_n, B_n, C_n, zeros(12,6));
-kalResponse = initial(lqgSys, ic, t);
+t = 0:.005:10;
+lqgSys = ss(A_n, B_n, C_n, 0);
+nRoof = 1;
+nFloor = -1;
+noise = nFloor+(nRoof-nFloor).*rand(length(t),1);
+kalResponse = lsim(lqgSys, noise, t, ic);
 
 figure
 plot(t, real(kalResponse(:,1)))
@@ -80,7 +82,9 @@ hold on
 plot(t, real(kalResponse(:,2)))
 plot(t, real(kalResponse(:,3)))
 xlabel('Time');
-ylabel('Position');
+ylabel('Value');
+title('LQR + LQG Response');
+legend(["Cart Position" "Link1 Angle (rad)" "Link2 Angle (rad)"])
 
 %% Plot
 cartPlot(kalResponse, m0, m1, m2, l1, l2, false, false, 10);

@@ -1,12 +1,12 @@
 clc; clear; close all;
 
 %% Plant Parameters
-m0 = 2; % Mass of cart
+m0 = 1.5; % Mass of cart
 m1 = .75; % Mass of first linkage
-m2 = 1; % Mass of second linkage
+m2 = .5; % Mass of second linkage
 
 l1 = .75; % Length of linkage 1
-l2 = 1; % Length of linkage 2
+l2 = .5; % Length of linkage 2
 
 %% Linearized Plant
 
@@ -40,17 +40,16 @@ C = eye(6);
 
 %% LQR
 
-Q = eye(6);
-
+Q = diag([70;100;100;30;1;1]);
 R = 1;
 
-[K] = lqr(A, B, Q, R);
+F = lqr(A, B, Q, R);
 
-ic = [0; deg2rad(90); deg2rad(0); 0; 0; 0];
+ic = [0; deg2rad(20); deg2rad(40); 0; 0; 0];
 
 t = 0:.005:10;
-lqgSys = ss(A-B*K, B, C, 0);
-kalResponse = initial(lqgSys, ic, t);
+lqrSys = ss(A-B*F, B, C, 0);
+kalResponse = initial(lqrSys, ic, t);
 
 figure
 plot(t, real(kalResponse(:,1)))
@@ -58,7 +57,9 @@ hold on
 plot(t, real(kalResponse(:,2)))
 plot(t, real(kalResponse(:,3)))
 xlabel('Time');
-ylabel('Position');
+ylabel('Value');
+title('LQR Response');
+legend(["Cart Position" "Link1 Angle (rad)" "Link2 Angle (rad)"])
 
 %% Plot
 cartPlot(kalResponse, m0, m1, m2, l1, l2, false, false, 10);

@@ -33,11 +33,12 @@ function cartPlot(states, m0, m1, m2, l1, l2, recAnimation, movePlot, windowSize
             num = 1;
         end
         cam = VideoWriter(fullfile(pwd, ['CartVideo_' num2str(num)]));
-        cam.FrameRate = 20;
+        cam.FrameRate = 200;
         open(cam);
     end
 
     f = figure;
+    plot([-10 10], [0 0], 'k--');
     hold on
     
     ax = f.Children;
@@ -51,7 +52,7 @@ function cartPlot(states, m0, m1, m2, l1, l2, recAnimation, movePlot, windowSize
         end
         
         if i == 1
-            cart = rectangle('Position', [cartX(1) 0 cartWidth cartHeight]);
+            cart = rectangle('Position', [cartX(1) 0 cartWidth cartHeight], 'EdgeColor', [0 .4470 .7410]);
             link1 = plot([x(1) link1X(1)], [cartHeight/2 link1Y(1)], 'LineWidth', link1Width);
             link2 = plot([link1X(1) link2X(1)], [link1Y(1) link2Y(1)], 'LineWidth', link2Width);
             pause(1);
